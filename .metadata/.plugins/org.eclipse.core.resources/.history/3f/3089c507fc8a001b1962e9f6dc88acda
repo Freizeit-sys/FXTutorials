@@ -1,0 +1,12 @@
+package main.java.com;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class Snake3dApp extends Application {
+
+	public void start(Stage primaryState) {
+		
+	}
+	
+}
