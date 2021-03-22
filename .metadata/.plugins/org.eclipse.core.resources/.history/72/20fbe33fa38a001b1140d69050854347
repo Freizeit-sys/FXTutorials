@@ -1,0 +1,111 @@
+package application;
+
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+
+public class MainWindowController {
+	
+	private Model model = new Model();
+	
+	@FXML
+	private Label result;
+	@FXML
+	private Button clearButton;
+	
+	public MainWindowController() {
+		String s = "0.09";
+		
+		if (this.isInteger2(s)) {
+			System.out.println("1");
+		} else {
+			System.out.println("2");
+		}
+		
+		long a = Long.parseLong(s);
+		System.out.println(a);
+		double b = Double.longBitsToDouble(a);
+		System.out.println(b);
+	}
+	
+    private boolean isInteger2(String text) {
+        try {
+            Integer.parseInt(text);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+		
+	@FXML
+	private void processNumpad(ActionEvent event) {
+		String oldvalue = result.getText();
+		String value = ((Button) event.getSource()).getText();
+		String operator = model.getOperator();
+		if (operator == "" || operator == null) {
+			result.setText(oldvalue.replaceFirst("^0", "") + value);
+			model.setNumber1(Long.parseLong(result.getText()));
+		} else {
+			result.setText(value);
+			model.setNumber2(Long.parseLong(result.getText()));
+		}
+		String newvalue = result.getText();
+		if (newvalue != "0") {
+			clearButton.setText("C");
+		}
+	}
+	
+	@FXML 
+	private void processOperator(ActionEvent event) {
+		String value = ((Button) event.getSource()).getText();
+		model.setOperator(value);
+	}
+	
+	@FXML 
+	private void processClear() {
+		model.clear();
+		result.setText("0");
+		clearButton.setText("AC");
+	}
+	
+	@FXML 
+	private void processReverse() {
+		if (result.getText().contains("-")) {
+			result.setText(result.getText().replace("-", ""));
+		} else {
+			result.setText("-" + result.getText());
+		}
+		
+		long value = Long.parseLong(result.getText());
+		String operator = model.getOperator();
+		if (operator == "" || operator == null) {
+			model.setNumber1(value);
+		} else {
+			model.setNumber2(value);
+		}
+	}
+	
+	@FXML
+	private void processPercentage() {
+		long num = Long.parseLong(result.getText());
+		System.out.println(num);
+		if (isInteger(num)) {
+			result.setText(String.valueOf(num / 100.0));
+		} else {
+			result.setText(String.valueOf(num * 100));
+		}
+	}
+	
+	private boolean isInteger(long num) {
+		System.out.println(num);
+		return (int) (Math.ceil(num)) == (int) (Math.floor(num));
+	}
+	
+	@FXML 
+	private void processCalculate() {
+		long result = model.calculate();
+		model.setNumber1(result);
+		this.result.setText(String.valueOf(result));
+	}
+}   
